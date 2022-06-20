@@ -7,7 +7,12 @@ import React, {
 	createContext
 } from 'react';
 import { Alert } from 'react-native';
-import { auth } from '../firebase';
+import {
+	auth,
+	signInWithEmailAndPassword,
+	createUserWithEmailAndPassword,
+	signOut
+} from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginReducer, initialLoginState } from './reducer';
 
@@ -32,8 +37,7 @@ const AppWrapper = ({ children }) => {
 	const authContext = useMemo(
 		() => ({
 			signIn: async (email, password) => {
-				auth
-					.signInWithEmailAndPassword(email, password)
+				signInWithEmailAndPassword(auth, email, password)
 					.then(async (userCredentials) => {
 						dispatch({
 							type: 'LOGIN',
@@ -77,16 +81,15 @@ const AppWrapper = ({ children }) => {
 						console.log('signIn error:', error.message);
 					});
 			},
-			signOut: async () => {
-				auth.signOut().then(async () => {
+			logOut: async () => {
+				signOut(auth).then(async () => {
 					console.log('User signed out!');
 					dispatch({ type: 'LOGOUT' });
 					await AsyncStorage.removeItem('userToken');
 				});
 			},
 			signUp: (email, password) => {
-				auth
-					.createUserWithEmailAndPassword(email, password)
+				createUserWithEmailAndPassword(auth, email, password)
 					.then(async (userCredentials) => {
 						console.log('User account created & signed in!');
 						dispatch({
