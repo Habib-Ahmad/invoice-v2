@@ -14,7 +14,7 @@ import { styles } from './styles';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const Home = ({ navigation }) => {
-	const { signOut } = useAuthContext();
+	const { logOut } = useAuthContext();
 
 	const [invoice, setInvoice] = useState([
 		{
@@ -52,7 +52,7 @@ const Home = ({ navigation }) => {
 			<View style={styles.header}>
 				<Text style={styles.headerText}>Home</Text>
 				<View style={styles.icons}>
-					<TouchableOpacity onPress={() => signOut()}>
+					<TouchableOpacity onPress={() => logOut()}>
 						<Icon name="logout" color="#009387" size={25} />
 					</TouchableOpacity>
 				</View>
