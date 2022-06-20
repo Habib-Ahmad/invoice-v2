@@ -1,10 +1,16 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useTheme } from '@react-navigation/native';
+import {
+	useTheme,
+	createNavigationContainerRef
+} from '@react-navigation/native';
 
 import Home from '../Home';
+
 import Clients from '../Clients';
+import AddClient from '../Clients/AddClient';
+
 import Invoice from '../Invoice';
 
 const Tab = createMaterialBottomTabNavigator();
@@ -65,8 +71,23 @@ const MainStackScreen = () => {
 					title: 'Home'
 				}}
 			/>
+			<Stack.Screen
+				name="AddClient"
+				component={AddClient}
+				options={{
+					title: 'Add Client'
+				}}
+			/>
 		</Stack.Navigator>
 	);
 };
 
 export default MainStackScreen;
+
+export const navigationRef = createNavigationContainerRef();
+
+export const navigate = (name, params) => {
+	if (navigationRef.isReady()) {
+		navigationRef.navigate(name, params);
+	}
+};

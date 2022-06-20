@@ -3,13 +3,17 @@ import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
+import { db } from '../../firebase';
+import { collection, getDocs, query } from 'firebase/firestore';
 
 const Clients = ({ navigation }) => {
 	const [clients, setClients] = useState([]);
 
 	const GetClientList = async () => {
-		const clientList = await AsyncStorage.getItem('clients');
-		clientList && setClients(JSON.parse(clientList));
+		const clientList = [];
+		await getDocs(collection(db, 'clients'))
+			.then((snap) => snap.forEach((doc) => clientList.push(doc.data())))
+			.then(() => setClients(clientList));
 	};
 
 	useEffect(() => {
@@ -31,7 +35,7 @@ const Clients = ({ navigation }) => {
 			</View>
 			<ScrollView style={styles.scrollView}>
 				<View style={styles.clients}>
-					{clients &&
+					{clients.length > 1 &&
 						clients.map((item, idx) => (
 							<TouchableOpacity
 								activeOpacity={0.8}

@@ -8,7 +8,7 @@ import {
 	ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { useAuthContext } from '../../context/context';
+import { useAuthContext } from '../../context/authContext';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { styles } from './styles';
 import { LinearGradient } from 'expo-linear-gradient';

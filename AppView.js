@@ -16,7 +16,8 @@ import {
 	DefaultTheme as NavigationDefaultTheme,
 	DarkTheme as NavigationDarkTheme
 } from '@react-navigation/native';
-import { useAuthContext } from './context/context';
+import { useAuthContext } from './context/authContext';
+import { navigationRef } from './screens/stacks/MainStackScreen';
 
 const AppView = () => {
 	const { loginState, isDarkTheme } = useAuthContext();
@@ -63,7 +64,7 @@ const AppView = () => {
 				backgroundColor="#fff"
 				translucent
 			/>
-			<NavigationContainer theme={theme}>
+			<NavigationContainer ref={navigationRef} theme={theme}>
 				<StackView />
 			</NavigationContainer>
 		</PaperProvider>
