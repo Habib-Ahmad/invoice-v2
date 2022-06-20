@@ -1,6 +1,6 @@
 import MainStackScreen from './screens/stacks/MainStackScreen';
 import RootStackScreen from './screens/stacks/RootStackScreen';
-import { useAuthContext } from './context/context';
+import { useAuthContext } from './context/authContext';
 
 const StackView = () => {
 	const { loginState } = useAuthContext();

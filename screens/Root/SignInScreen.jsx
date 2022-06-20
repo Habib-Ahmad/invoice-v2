@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
 	View,
 	Text,
@@ -7,13 +7,13 @@ import {
 	TouchableOpacity,
 	Alert,
 	Platform,
-	StatusBar
+	StatusBar,
+	Animated
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from '@react-navigation/native';
-import { useAuthContext } from '../../context/context';
+import { useAuthContext } from '../../context/authContext';
 
 const SignInScreen = ({ navigation }) => {
 	const [data, setData] = useState({
@@ -64,7 +64,7 @@ const SignInScreen = ({ navigation }) => {
 			<View style={styles.header}>
 				<Text style={styles.textHeader}>Welcome!</Text>
 			</View>
-			<Animatable.View
+			<Animated.View
 				animation="fadeInUpBig"
 				style={[styles.footer, { backgroundColor: colors.background }]}
 			>
@@ -127,7 +127,7 @@ const SignInScreen = ({ navigation }) => {
 						<Text style={styles.textSign}>Sign Up</Text>
 					</TouchableOpacity>
 				</View>
-			</Animatable.View>
+			</Animated.View>
 		</View>
 	);
 };

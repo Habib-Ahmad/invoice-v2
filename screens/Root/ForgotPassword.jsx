@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
 	View,
 	Text,
 	StyleSheet,
 	TextInput,
 	TouchableOpacity,
-	Alert
+	Alert,
+	Animated
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '@react-navigation/native';
 import { auth } from '../../firebase';
@@ -45,7 +45,7 @@ const ForgotPassword = () => {
 			<View style={styles.header}>
 				<Text style={styles.textHeader}>Reset Password</Text>
 			</View>
-			<Animatable.View
+			<Animated.View
 				animation="fadeInUpBig"
 				style={[styles.footer, { backgroundColor: colors.background }]}
 			>
@@ -69,7 +69,7 @@ const ForgotPassword = () => {
 						<Text style={[styles.textSign, { color: '#fff' }]}>Send</Text>
 					</TouchableOpacity>
 				</View>
-			</Animatable.View>
+			</Animated.View>
 		</View>
 	);
 };

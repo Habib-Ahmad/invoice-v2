@@ -1,4 +1,4 @@
-import AppWrapper from './context/context';
+import AppWrapper from './context/authContext';
 import AppView from './AppView';
 
 const App = () => {

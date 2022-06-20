@@ -1,13 +1,12 @@
-import React from 'react';
 import {
 	View,
 	Text,
 	StyleSheet,
 	Dimensions,
 	TouchableOpacity,
-	StatusBar
+	StatusBar,
+	Animated
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
@@ -20,7 +19,7 @@ const SplashScreen = ({ navigation }) => {
 		<View style={styles.container}>
 			<StatusBar backgroundColor="#075E54" barStyle="light-content" />
 			<View style={styles.header}>
-				<Animatable.Image
+				<Animated.Image
 					animation="bounceIn"
 					duration={1500}
 					source={logo}
@@ -28,7 +27,7 @@ const SplashScreen = ({ navigation }) => {
 					resizeMode="stretch"
 				/>
 			</View>
-			<Animatable.View
+			<Animated.View
 				style={[styles.footer, { backgroundColor: colors.background }]}
 				animation="fadeInUpBig"
 				duration={1500}
@@ -47,7 +46,7 @@ const SplashScreen = ({ navigation }) => {
 						</LinearGradient>
 					</TouchableOpacity>
 				</View>
-			</Animatable.View>
+			</Animated.View>
 		</View>
 	);
 };
