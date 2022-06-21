@@ -1,15 +1,14 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {
-	useTheme,
-	createNavigationContainerRef
-} from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 
 import Home from '../Home';
 
 import Clients from '../Clients';
 import AddClient from '../Clients/AddClient';
+import ViewClient from '../Clients/ViewClient';
+import EditClient from '../Clients/EditClient';
 
 import Invoice from '../Invoice';
 
@@ -71,23 +70,11 @@ const MainStackScreen = () => {
 					title: 'Home'
 				}}
 			/>
-			<Stack.Screen
-				name="AddClient"
-				component={AddClient}
-				options={{
-					title: 'Add Client'
-				}}
-			/>
+			<Stack.Screen name="AddClient" component={AddClient} />
+			<Stack.Screen name="ViewClient" component={ViewClient} />
+			<Stack.Screen name="EditClient" component={EditClient} />
 		</Stack.Navigator>
 	);
 };
 
 export default MainStackScreen;
-
-export const navigationRef = createNavigationContainerRef();
-
-export const navigate = (name, params) => {
-	if (navigationRef.isReady()) {
-		navigationRef.navigate(name, params);
-	}
-};

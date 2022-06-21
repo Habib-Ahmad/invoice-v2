@@ -17,7 +17,7 @@ import {
 	DarkTheme as NavigationDarkTheme
 } from '@react-navigation/native';
 import { useAuthContext } from './context/authContext';
-import { navigationRef } from './screens/stacks/MainStackScreen';
+import { navigationRef } from './RootNavigation';
 
 const AppView = () => {
 	const { loginState, isDarkTheme } = useAuthContext();

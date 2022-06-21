@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import * as RootNavigation from '../screens/stacks/MainStackScreen';
+import * as RootNavigation from '../RootNavigation';
 import Colors from './Colors';
 
-const ScreenHeader = ({ heading, to }) => {
+const ScreenHeader = ({ heading, to, props }) => {
 	return (
 		<View style={styles.header}>
 			<TouchableOpacity
 				activeOpacity={0.9}
-				onPress={() => RootNavigation.navigate(to)}
+				onPress={() => RootNavigation.navigate(to, props && props)}
 			>
 				<Icon
 					style={{ marginRight: 15 }}

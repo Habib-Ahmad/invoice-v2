@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
 import { db } from '../../firebase';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 
 const Clients = ({ navigation }) => {
 	const [clients, setClients] = useState([]);
@@ -12,7 +11,9 @@ const Clients = ({ navigation }) => {
 	const GetClientList = async () => {
 		const clientList = [];
 		await getDocs(collection(db, 'clients'))
-			.then((snap) => snap.forEach((doc) => clientList.push(doc.data())))
+			.then((snap) =>
+				snap.forEach((doc) => clientList.push({ ...doc.data(), id: doc.id }))
+			)
 			.then(() => setClients(clientList));
 	};
 
@@ -23,9 +24,8 @@ const Clients = ({ navigation }) => {
 		return unsubscribe;
 	}, [navigation]);
 
-	const ViewClient = async (name) => {
-		await AsyncStorage.setItem('viewClientName', name);
-		navigation.navigate('ViewClient');
+	const ViewClient = (id) => {
+		navigation.navigate('ViewClient', id);
 	};
 
 	return (
@@ -35,22 +35,22 @@ const Clients = ({ navigation }) => {
 			</View>
 			<ScrollView style={styles.scrollView}>
 				<View style={styles.clients}>
-					{clients.length > 1 &&
-						clients.map((item, idx) => (
+					{clients.length > 0 &&
+						clients.map((client, idx) => (
 							<TouchableOpacity
 								activeOpacity={0.8}
 								key={idx}
 								style={styles.client}
-								onPress={() => ViewClient(item.name)}
+								onPress={() => ViewClient(client.id)}
 							>
 								<View style={styles.logoWrapper}>
 									<Text style={styles.logo}>
-										{item.name && item.name.charAt(0)}
+										{client.name && client.name.charAt(0)}
 									</Text>
 								</View>
 								<View style={styles.detailsWrapper}>
-									<Text style={styles.name}>{item.name}</Text>
-									<Text style={styles.email}>{item.email}</Text>
+									<Text style={styles.name}>{client.name}</Text>
+									<Text style={styles.email}>{client.email}</Text>
 								</View>
 							</TouchableOpacity>
 						))}
