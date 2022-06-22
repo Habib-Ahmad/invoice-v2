@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, TextInput } from 'react-native';
 import { collection, addDoc } from 'firebase/firestore';
 import { styles } from './styles';
 import { db } from '../../../firebase';
 import ScreenHeader from '../../../components/ScreenHeader';
+import Button from '../../../components/Button';
+import InputText from '../../../components/InputText';
 
-const AddClient = ({ navigation }) => {
+const NewClient = ({ navigation }) => {
 	const [validation, setValidation] = useState({
 		isValidName: true
 	});
@@ -56,7 +57,7 @@ const AddClient = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<ScreenHeader heading="Add Client" to="Clients" />
+			<ScreenHeader heading="Add Client" navigation={navigation} />
 
 			<InputText key="Name" text="Name" bool={data.name} />
 			<View style={styles.inputWrapper}>
@@ -95,20 +96,9 @@ const AddClient = ({ navigation }) => {
 				/>
 			</View>
 
-			<TouchableOpacity activeOpacity={0.7} onPress={() => handleSave()}>
-				<LinearGradient colors={['#08d4c4', '#01ab9d']} style={styles.signIn}>
-					<Text style={[styles.textSign, { color: '#fff' }]}>Save</Text>
-				</LinearGradient>
-			</TouchableOpacity>
+			<Button onPress={handleSave} text="Save" />
 		</View>
 	);
 };
 
-export default AddClient;
-
-const InputText = ({ bool, text }) => {
-	if (bool) {
-		return <Text style={styles.inputHeader}>{text}</Text>;
-	}
-	return <View style={{ marginTop: 50 }} />;
-};
+export default NewClient;

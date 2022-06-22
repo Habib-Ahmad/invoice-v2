@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
 
-const InvoiceScreen = ({ navigation }) => {
+const Invoices = ({ navigation }) => {
 	const [invoice, setInvoice] = useState([
 		{
 			id: '',
@@ -17,31 +16,18 @@ const InvoiceScreen = ({ navigation }) => {
 		}
 	]);
 
-	const GetInvoices = async () => {
-		const invoiceListObject = await AsyncStorage.getItem('invoices');
-		const invoiceList = JSON.parse(invoiceListObject);
-		invoiceList && invoiceList.length > 0
-			? setInvoice(invoiceList)
-			: setInvoice(invoice);
-	};
+	const getInvoices = async () => {};
 
 	const ViewInvoice = async (id) => {
-		await AsyncStorage.setItem('viewInvoiceId', id);
 		navigation.navigate('ViewInvoice');
 	};
 
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', () => {
-			GetInvoices();
+			getInvoices();
 		});
 		return unsubscribe;
 	}, [navigation]);
-
-	// const Clear = async () => {
-	//   await AsyncStorage.removeItem('invoices');
-	//   await AsyncStorage.removeItem('clients');
-	//   await AsyncStorage.removeItem('ItemDatabase');
-	// };
 
 	return (
 		<View style={styles.container}>
@@ -82,4 +68,4 @@ const InvoiceScreen = ({ navigation }) => {
 	);
 };
 
-export default InvoiceScreen;
+export default Invoices;

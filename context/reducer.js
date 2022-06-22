@@ -1,37 +1,26 @@
-export const initialLoginState = {
-	isLoading: true,
-	userName: null,
-	userToken: null
+export const initailState = {
+	newInvoiceClient: {},
+	items: []
 };
 
-export const loginReducer = (prevState, action) => {
+export const defaultReducer = (state, action) => {
 	switch (action.type) {
-		case 'RETRIEVE_TOKEN':
+		case 'ADD_CLIENT':
 			return {
-				...prevState,
-				userToken: action.token,
-				isLoading: false
+				...state,
+				newInvoiceClient: action.payload
 			};
-		case 'LOGIN':
+		case 'REMOVE_CLIENT': {
 			return {
-				...prevState,
-				userName: action.id,
-				userToken: action.token,
-				isLoading: false
+				...state,
+				newInvoiceClient: {}
 			};
-		case 'LOGOUT':
+		}
+		case 'ADD_ITEM': {
 			return {
-				...prevState,
-				userName: null,
-				userToken: null,
-				isLoading: false
+				...state,
+				items: [...state.items, action.payload]
 			};
-		case 'REGISTER':
-			return {
-				...prevState,
-				userName: action.id,
-				userToken: action.token,
-				isLoading: false
-			};
+		}
 	}
 };

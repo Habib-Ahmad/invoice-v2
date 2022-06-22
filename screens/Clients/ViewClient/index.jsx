@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -35,17 +35,21 @@ const ViewClient = ({ navigation, route }) => {
 		invoices: []
 	});
 
-	useEffect(() => {
-		const getClient = async () => {
-			const clientRef = doc(db, `clients/${route.params}`);
-			const clientSnap = await getDoc(clientRef);
+	const getClient = async () => {
+		const clientRef = doc(db, `clients/${route.params}`);
+		const clientSnap = await getDoc(clientRef);
 
-			if (clientSnap.exists()) {
-				setData({ id: clientSnap.id, ...clientSnap.data() });
-			}
-		};
-		getClient();
-	}, []);
+		if (clientSnap.exists()) {
+			setData({ id: clientSnap.id, ...clientSnap.data() });
+		}
+	};
+
+	useEffect(() => {
+		const unsubscribe = navigation.addListener('focus', () => {
+			getClient();
+		});
+		return unsubscribe;
+	}, [navigation]);
 
 	const EditClient = () => {
 		navigation.navigate('EditClient', { ...data });

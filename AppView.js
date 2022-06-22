@@ -1,10 +1,4 @@
-import {
-	StyleSheet,
-	View,
-	Text,
-	ActivityIndicator,
-	StatusBar
-} from 'react-native';
+import { StyleSheet, View, ActivityIndicator, StatusBar } from 'react-native';
 import {
 	Provider as PaperProvider,
 	DefaultTheme as PaperDefaultTheme,

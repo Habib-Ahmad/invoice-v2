@@ -6,11 +6,14 @@ import { useTheme } from '@react-navigation/native';
 import Home from '../Home';
 
 import Clients from '../Clients';
-import AddClient from '../Clients/AddClient';
+import NewClient from '../Clients/NewClient';
 import ViewClient from '../Clients/ViewClient';
 import EditClient from '../Clients/EditClient';
 
-import Invoice from '../Invoice';
+import Invoices from '../Invoices';
+import NewInvoice from '../Invoices/NewInvoice';
+import ClientList from '../Invoices/NewInvoice/ClientList';
+import NewItem from '../Invoices/NewInvoice/Items/NewItem';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -47,8 +50,8 @@ const HomeTabs = () => {
 				}}
 			/>
 			<Tab.Screen
-				name="Invoice"
-				component={Invoice}
+				name="Invoices"
+				component={Invoices}
 				options={{
 					tabBarLabel: 'Invoices',
 					tabBarIcon: ({ color }) => (
@@ -63,16 +66,13 @@ const HomeTabs = () => {
 const MainStackScreen = () => {
 	return (
 		<Stack.Navigator screenOptions={{ headerShown: false }}>
-			<Stack.Screen
-				name="HomeTabs"
-				component={HomeTabs}
-				options={{
-					title: 'Home'
-				}}
-			/>
-			<Stack.Screen name="AddClient" component={AddClient} />
+			<Stack.Screen name="HomeTabs" component={HomeTabs} />
+			<Stack.Screen name="NewClient" component={NewClient} />
 			<Stack.Screen name="ViewClient" component={ViewClient} />
 			<Stack.Screen name="EditClient" component={EditClient} />
+			<Stack.Screen name="NewInvoice" component={NewInvoice} />
+			<Stack.Screen name="ClientList" component={ClientList} />
+			<Stack.Screen name="NewItem" component={NewItem} />
 		</Stack.Navigator>
 	);
 };

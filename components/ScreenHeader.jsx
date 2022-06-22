@@ -1,15 +1,30 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as RootNavigation from '../RootNavigation';
 import Colors from './Colors';
 
-const ScreenHeader = ({ heading, to, props }) => {
+const ScreenHeader = ({ heading, to, props, confirmClose, navigation }) => {
+	const close = () => {
+		if (navigation) {
+			navigation.goBack();
+		} else if (confirmClose) {
+			Alert.alert('Discard changes?', 'All changes will be lost', [
+				{
+					text: 'Cancel'
+				},
+				{
+					text: 'Discard Changes',
+					onPress: () => RootNavigation.navigate(to, props && props)
+				}
+			]);
+		} else {
+			RootNavigation.navigate(to, props && props);
+		}
+	};
+
 	return (
 		<View style={styles.header}>
-			<TouchableOpacity
-				activeOpacity={0.9}
-				onPress={() => RootNavigation.navigate(to, props && props)}
-			>
+			<TouchableOpacity activeOpacity={0.9} onPress={close}>
 				<Icon
 					style={{ marginRight: 15 }}
 					name="close-outline"
