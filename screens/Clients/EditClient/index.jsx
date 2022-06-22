@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { doc, updateDoc } from 'firebase/firestore';
 import { styles } from './styles';
 import ScreenHeader from '../../../components/ScreenHeader';
 import { db } from '../../../firebase';
+import InputText from '../../../components/InputText';
 
 const EditClient = ({ navigation, route }) => {
 	const { name, mobile, email, id } = route.params;
@@ -107,10 +108,3 @@ const EditClient = ({ navigation, route }) => {
 };
 
 export default EditClient;
-
-const InputText = ({ bool, text }) => {
-	if (bool) {
-		return <Text style={styles.inputText}>{text}</Text>;
-	}
-	return <View style={{ marginTop: 50 }} />;
-};

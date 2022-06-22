@@ -14,7 +14,7 @@ import {
 	signOut
 } from '../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginReducer, initialLoginState } from './reducer';
+import { loginReducer, initialLoginState } from './authReducer';
 
 const AuthContext = createContext();
 
