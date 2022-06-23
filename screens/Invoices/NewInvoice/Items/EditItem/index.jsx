@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TextInput, Alert } from 'react-native';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../../../firebase';
 import { styles } from './styles';
-import ScreenHeader from '../../../../../components/ScreenHeader';
 import Button from '../../../../../components/Button';
+import ScreenHeader from '../../../../../components/ScreenHeader';
 import InputText from '../../../../../components/InputText';
-import { useGlobalContext } from '../../../../../context';
 
-const NewItem = ({ navigation }) => {
-	const { state, dispatch } = useGlobalContext();
+const EditItem = ({ navigation, route }) => {
+	const { name, description, rate, quantity } = route.params;
+
 	const [validation, setValidation] = useState({
 		isValidName: true,
 		isValidRate: true,
@@ -15,20 +17,11 @@ const NewItem = ({ navigation }) => {
 	});
 
 	const [item, setItem] = useState({
-		name: '',
-		description: '',
-		rate: '',
-		quantity: ''
+		name,
+		description,
+		rate,
+		quantity
 	});
-
-	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
-			if (Object.keys(state.currentItem).length) {
-				setItem(state.currentItem);
-			}
-		});
-		return unsubscribe;
-	}, [navigation, state]);
 
 	const onChangeText = (val, id) => {
 		setItem({
@@ -37,15 +30,16 @@ const NewItem = ({ navigation }) => {
 		});
 	};
 
-	const AddItem = () => {
-		const { name, rate, quantity } = item;
+	const handleSave = async () => {
+		const { name, description, rate, quantity } = item;
 		if (name && rate && quantity) {
-			dispatch({
-				type: 'ADD_ITEM',
-				payload: { ...item }
+			const clientRef = doc(db, `items/${id}`);
+			await updateDoc(clientRef, {
+				name,
+				description,
+				rate,
+				quantity
 			});
-			navigation.goBack();
-			console.log(item);
 		} else {
 			setValidation({
 				...validation,
@@ -65,9 +59,25 @@ const NewItem = ({ navigation }) => {
 		}
 	};
 
+	const handleDeleteItem = async () => {
+		Alert.alert(
+			'Confirm Delete',
+			'Are you sure you want to delete this item?',
+			[
+				{
+					text: 'Cancel'
+				},
+				{
+					text: 'OK',
+					onPress: () => {}
+				}
+			]
+		);
+	};
+
 	return (
 		<View style={styles.container}>
-			<ScreenHeader heading="Add Item" navigation={navigation} />
+			<ScreenHeader heading="Edit Item" navigation={navigation} />
 
 			<InputText bool={item.name} text="Item name" />
 			<View style={styles.inputWrapper}>
@@ -135,16 +145,10 @@ const NewItem = ({ navigation }) => {
 				</View>
 			</View>
 
-			<TouchableOpacity
-				style={styles.select}
-				onPress={() => navigation.navigate('ItemList')}
-			>
-				<Text style={styles.selectText}>Select from list</Text>
-			</TouchableOpacity>
-
-			<Button text="Add" onPress={AddItem} />
+			<Button onPress={handleSave} text="Save Changes" />
+			<Button onPress={handleDeleteItem} text="Delete" />
 		</View>
 	);
 };
 
-export default NewItem;
+export default EditItem;

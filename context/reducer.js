@@ -1,6 +1,7 @@
 export const initailState = {
 	newInvoiceClient: {},
-	items: []
+	items: [],
+	currentItem: {}
 };
 
 export const defaultReducer = (state, action) => {
@@ -16,11 +17,21 @@ export const defaultReducer = (state, action) => {
 				newInvoiceClient: {}
 			};
 		}
+		case 'ADD_CURRENT_ITEM': {
+			return {
+				...state,
+				currentItem: action.payload
+			};
+		}
 		case 'ADD_ITEM': {
 			return {
 				...state,
-				items: [...state.items, action.payload]
+				items: [...state.items, action.payload],
+				currentItem: {}
 			};
+		}
+		case 'CLEAR_STATE': {
+			return initailState;
 		}
 	}
 };

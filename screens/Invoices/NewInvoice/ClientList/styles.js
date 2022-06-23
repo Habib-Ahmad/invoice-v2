@@ -8,20 +8,6 @@ export const styles = StyleSheet.create({
 		backgroundColor: Colors.background,
 		position: 'relative'
 	},
-	header: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		backgroundColor: Colors.background2,
-		paddingHorizontal: 20,
-		paddingVertical: 10,
-		borderBottomWidth: 1,
-		borderBottomColor: '#c9c9c9',
-		zIndex: 5
-	},
-	headerText: {
-		fontSize: 22,
-		color: Colors.text
-	},
 	clients: {
 		paddingTop: 40
 	},

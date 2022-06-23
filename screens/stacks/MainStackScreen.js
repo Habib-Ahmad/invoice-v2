@@ -14,6 +14,8 @@ import Invoices from '../Invoices';
 import NewInvoice from '../Invoices/NewInvoice';
 import ClientList from '../Invoices/NewInvoice/ClientList';
 import NewItem from '../Invoices/NewInvoice/Items/NewItem';
+import EditItem from '../Invoices/NewInvoice/Items/EditItem';
+import ItemList from '../Invoices/NewInvoice/Items/ItemList';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -73,6 +75,8 @@ const MainStackScreen = () => {
 			<Stack.Screen name="NewInvoice" component={NewInvoice} />
 			<Stack.Screen name="ClientList" component={ClientList} />
 			<Stack.Screen name="NewItem" component={NewItem} />
+			<Stack.Screen name="EditItem" component={EditItem} />
+			<Stack.Screen name="ItemList" component={ItemList} />
 		</Stack.Navigator>
 	);
 };

@@ -8,20 +8,6 @@ export const styles = StyleSheet.create({
 		backgroundColor: Colors.background,
 		position: 'relative'
 	},
-	header: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		backgroundColor: Colors.background2,
-		paddingHorizontal: 20,
-		paddingVertical: 10,
-		borderBottomWidth: 1,
-		borderBottomColor: '#c9c9c9',
-		zIndex: 5
-	},
-	headerText: {
-		fontSize: 22,
-		color: Colors.text
-	},
 	titleInput: {
 		fontSize: 16,
 		width: '100%'
@@ -126,16 +112,6 @@ export const styles = StyleSheet.create({
 	subTotalText1: {
 		color: '#6e6e6e'
 	},
-	discountWrapper: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		backgroundColor: '#fff',
-		height: 80,
-		paddingHorizontal: 20,
-		borderBottomWidth: 1,
-		borderBottomColor: '#c9c9c9'
-	},
 	nextButtonWrapper: {
 		position: 'absolute',
 		bottom: 30,
@@ -143,15 +119,6 @@ export const styles = StyleSheet.create({
 		height: 50,
 		backgroundColor: 'transparent',
 		justifyContent: 'center'
-	},
-	nextButton: {
-		height: 50,
-		justifyContent: 'center',
-		alignItems: 'center',
-		borderRadius: 10,
-		borderColor: '#009387',
-		borderWidth: 1,
-		marginHorizontal: 20
 	},
 	errorMsg: {
 		color: '#FF0000',
