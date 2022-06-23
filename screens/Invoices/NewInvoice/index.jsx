@@ -7,12 +7,14 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
 import ScreenHeader from '../../../components/ScreenHeader';
 import { styles } from './styles';
 import { useGlobalContext } from '../../../context';
+import Button from '../../../components/Button';
+import { writeBatch, doc, collection } from 'firebase/firestore';
+import { db } from '../../../firebase';
 
-const NewInvoice = ({ navigation, route }) => {
+const NewInvoice = ({ navigation }) => {
 	const { state, dispatch } = useGlobalContext();
 	const [isValidClient, setIsValidClient] = useState(true);
 	const [data, setData] = useState({
@@ -33,6 +35,7 @@ const NewInvoice = ({ navigation, route }) => {
 				client: state.newInvoiceClient,
 				items: state.items
 			});
+			Object.keys(state.newInvoiceClient).length && setIsValidClient(true);
 		});
 		return unsubscribe;
 	}, [navigation, state]);
@@ -44,6 +47,10 @@ const NewInvoice = ({ navigation, route }) => {
 		});
 	};
 
+	const editItem = (item) => {
+		navigation.navigate('EditItem', item);
+	};
+
 	const removeClient = () => {
 		setData({
 			...data,
@@ -52,6 +59,26 @@ const NewInvoice = ({ navigation, route }) => {
 		dispatch({
 			type: 'REMOVE_CLIENT'
 		});
+	};
+
+	const createPDF = async () => {
+		if (Object.keys(data.client).length) {
+			const batch = writeBatch(db);
+			data.items.forEach((item) => {
+				if (!item.id) {
+					delete item.quantity;
+					const itemRef = doc(collection(db, 'items'));
+					batch.set(itemRef, item);
+				}
+			});
+			await batch.commit();
+			dispatch({
+				type: 'CLEAR_STATE'
+			});
+			navigation.navigate('Invoices');
+		} else {
+			setIsValidClient(false);
+		}
 	};
 
 	return (
@@ -121,7 +148,7 @@ const NewInvoice = ({ navigation, route }) => {
 							activeOpacity={0.5}
 							style={styles.listItem}
 							key={idx}
-							// onPress={() => EditItem(item.name)}
+							onPress={() => editItem(item)}
 						>
 							<Text style={styles.listItemName}>{item.name}</Text>
 							<Text
@@ -134,17 +161,15 @@ const NewInvoice = ({ navigation, route }) => {
 							</Text>
 							<View style={styles.listItemNumbersWrapper}>
 								<Text style={styles.listItemNumbers}>
-									₦{item.rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
-									x{' '}
-									{item.quantity
-										.toString()
-										.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
+									₦{item.rate.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} x{' '}
+									{item.quantity.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
 								</Text>
 								<Text style={styles.listItemNumbers}>
 									₦
-									{(item.rate * item.quantity)
-										.toString()
-										.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+									{String(item.rate * item.quantity).replace(
+										/\B(?=(\d{3})+(?!\d))/g,
+										','
+									)}
 								</Text>
 							</View>
 						</TouchableOpacity>
@@ -163,23 +188,14 @@ const NewInvoice = ({ navigation, route }) => {
 				>
 					<Text style={styles.subTotalText1}>Total</Text>
 					<Text style={styles.subTotal}>
-						₦{total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+						₦{String(total).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
 					</Text>
 				</View>
 			</ScrollView>
 
-			<TouchableOpacity
-				activeOpacity={0.7}
-				// onPress={() => CreatePDF()}
-				style={styles.nextButtonWrapper}
-			>
-				<LinearGradient
-					colors={['#08d4c4', '#01ab9d']}
-					style={styles.nextButton}
-				>
-					<Text style={[styles.textSign, { color: '#fff' }]}>Generate PDF</Text>
-				</LinearGradient>
-			</TouchableOpacity>
+			<View style={{ marginBottom: 30 }}>
+				<Button onPress={createPDF} text="Create PDF" />
+			</View>
 		</View>
 	);
 };

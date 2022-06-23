@@ -1,18 +1,38 @@
-import {
-	View,
-	Text,
-	TouchableOpacity,
-	Alert,
-	ScrollView,
-	RefreshControl
-} from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../../../../firebase';
 import { styles } from './styles';
+import ScreenHeader from '../../../../../components/ScreenHeader';
+import { useGlobalContext } from '../../../../../context';
 
-const Items = ({ navigation }) => {
-	const setItemDetails = async (item) => {
-		await AsyncStorage.setItem('itemDetails', JSON.stringify(item));
-		navigation.navigate('AddItem');
+const ItemList = ({ navigation }) => {
+	const { dispatch } = useGlobalContext();
+	const [items, setItems] = useState([]);
+
+	const getItemsList = async () => {
+		const itemsList = [];
+		await getDocs(collection(db, 'items'))
+			.then((snap) =>
+				snap.forEach((doc) => itemsList.push({ ...doc.data(), id: doc.id }))
+			)
+			.then(() => setItems(itemsList));
+	};
+
+	useEffect(() => {
+		const unsubscribe = navigation.addListener('focus', () => {
+			getItemsList();
+		});
+		return unsubscribe;
+	}, [navigation]);
+
+	const handleSelect = (item) => {
+		dispatch({
+			type: 'ADD_CURRENT_ITEM',
+			payload: item
+		});
+		navigation.navigate('NewItem');
 	};
 
 	const deleteItem = async (id) => {
@@ -25,12 +45,7 @@ const Items = ({ navigation }) => {
 				},
 				{
 					text: 'OK',
-					onPress: async () => {
-						await database()
-							.ref(`/items/${id}`)
-							.remove()
-							.then(() => onRefresh());
-					}
+					onPress: async () => await deleteDoc(doc(db, `items/${id}`))
 				}
 			]
 		);
@@ -38,34 +53,14 @@ const Items = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.header}>
-				<TouchableOpacity
-					activeOpacity={0.9}
-					onPress={() => navigation.goBack()}
-				>
-					<Icon
-						style={{ marginRight: 15 }}
-						name="close"
-						color="#075E54"
-						size={25}
-					/>
-				</TouchableOpacity>
-				<Text style={styles.headerText}>Items</Text>
-			</View>
+			<ScreenHeader heading="Items" navigation={navigation} />
 
-			<ScrollView
-				contentContainerStyle={styles.scrollView}
-				refreshControl={
-					<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-				}
-			>
-				{changes && <Text>Changes detected, pull down to refresh</Text>}
-
+			<ScrollView>
 				<View style={styles.items}>
-					{items &&
+					{items.length > 0 &&
 						items.map((item) => (
 							<TouchableOpacity
-								onPress={() => setItemDetails(item)}
+								onPress={() => handleSelect(item)}
 								style={styles.item}
 								key={item.id}
 							>
@@ -97,4 +92,4 @@ const Items = ({ navigation }) => {
 	);
 };
 
-export default Items;
+export default ItemList;
