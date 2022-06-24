@@ -3,18 +3,20 @@ import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { styles } from './styles';
 import { db } from '../../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 const Clients = ({ navigation }) => {
 	const [clients, setClients] = useState([]);
 
 	const GetClientList = async () => {
-		const clientList = [];
-		await getDocs(collection(db, 'clients'))
-			.then((snap) =>
-				snap.forEach((doc) => clientList.push({ ...doc.data(), id: doc.id }))
-			)
-			.then(() => setClients(clientList));
+		const ref = collection(db, 'clients');
+		onSnapshot(ref, (snap) => {
+			const data = snap.docs.map((snapDoc) => ({
+				...snapDoc.data(),
+				id: snapDoc.id
+			}));
+			setClients(data);
+		});
 	};
 
 	useEffect(() => {

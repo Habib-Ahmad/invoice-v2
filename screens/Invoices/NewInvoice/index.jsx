@@ -1,3 +1,4 @@
+import { writeBatch, doc, collection } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
 	Text,
@@ -7,12 +8,11 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ScreenHeader from '../../../components/ScreenHeader';
-import { styles } from './styles';
-import { useGlobalContext } from '../../../context';
 import Button from '../../../components/Button';
-import { writeBatch, doc, collection } from 'firebase/firestore';
+import ScreenHeader from '../../../components/ScreenHeader';
+import { useGlobalContext } from '../../../context';
 import { db } from '../../../firebase';
+import { styles } from './styles';
 
 const NewInvoice = ({ navigation }) => {
 	const { state, dispatch } = useGlobalContext();
