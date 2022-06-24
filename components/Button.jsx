@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const Button = ({ text, onPress }) => {
 	return (

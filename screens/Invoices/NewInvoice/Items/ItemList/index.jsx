@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import {
+	collection,
+	getDocs,
+	doc,
+	deleteDoc,
+	onSnapshot
+} from 'firebase/firestore';
 import { db } from '../../../../../firebase';
 import { styles } from './styles';
 import ScreenHeader from '../../../../../components/ScreenHeader';
@@ -11,13 +17,15 @@ const ItemList = ({ navigation }) => {
 	const { dispatch } = useGlobalContext();
 	const [items, setItems] = useState([]);
 
-	const getItemsList = async () => {
-		const itemsList = [];
-		await getDocs(collection(db, 'items'))
-			.then((snap) =>
-				snap.forEach((doc) => itemsList.push({ ...doc.data(), id: doc.id }))
-			)
-			.then(() => setItems(itemsList));
+	const getItemsList = () => {
+		const ref = collection(db, 'items');
+		onSnapshot(ref, (snap) => {
+			const data = snap.docs.map((snapDoc) => ({
+				...snapDoc.data(),
+				id: snapDoc.id
+			}));
+			setItems(data);
+		});
 	};
 
 	useEffect(() => {
