@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDoc, doc } from 'firebase/firestore';
 import { styles } from './styles';
 import { db } from '../../../firebase';
 import ScreenHeader from '../../../components/ScreenHeader';
@@ -15,8 +15,7 @@ const NewClient = ({ navigation }) => {
 	const [data, setData] = useState({
 		name: '',
 		mobile: '',
-		email: '',
-		invoices: []
+		email: ''
 	});
 
 	const onChangeText = (val, id) => {
@@ -43,6 +42,18 @@ const NewClient = ({ navigation }) => {
 
 			try {
 				await addDoc(collection(db, 'clients'), data);
+				// const client = await addDoc(collection(db, 'clients'), data).then(
+				// 	async (docRef) => {
+				// 		const id = docRef.id;
+				// 		const document = await getDoc(doc(db, `clients/${id}`));
+				// 		return document;
+				// 	}
+				// );
+				// clientData = client.data();
+				// clientData.invoices = await addDoc(
+				// 	collection(db, `clients/${client.id}/invoices`),
+				// 	{}
+				// );
 				navigation.navigate('Clients');
 			} catch (e) {
 				console.error('Error adding document: ', e);
