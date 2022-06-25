@@ -8,6 +8,8 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import * as Print from 'expo-print';
+import { shareAsync } from 'expo-sharing';
 import Button from '../../../components/Button';
 import ScreenHeader from '../../../components/ScreenHeader';
 import { useGlobalContext } from '../../../context';
@@ -61,8 +63,33 @@ const NewInvoice = ({ navigation }) => {
 		});
 	};
 
+	const print = async () => {
+		// On iOS/android prints the given html. On web prints the HTML from the current page.
+		await Print.printAsync({
+			html,
+			printerUrl: selectedPrinter?.url // iOS only
+		});
+	};
+
+	const printToFile = async () => {
+		// On iOS/android prints the given html. On web prints the HTML from the current page.
+		const { uri } = await Print.printToFileAsync({
+			html
+		});
+		console.log('File has been saved to:', uri);
+		await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+	};
+
+	const selectPrinter = async () => {
+		const printer = await Print.selectPrinterAsync(); // iOS only
+		setSelectedPrinter(printer);
+	};
+
 	const createPDF = async () => {
 		if (Object.keys(data.client).length) {
+			data.client.invoices && delete data.client.invoices;
+
+			// add items to db
 			const batch = writeBatch(db);
 			data.items.forEach((item) => {
 				if (!item.id) {
@@ -72,6 +99,8 @@ const NewInvoice = ({ navigation }) => {
 				}
 			});
 			await batch.commit();
+
+			// clear context
 			dispatch({
 				type: 'CLEAR_STATE'
 			});

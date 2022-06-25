@@ -66,7 +66,7 @@ const ViewClient = ({ navigation, route }) => {
 				{
 					text: 'OK',
 					onPress: async () => {
-						await deleteDoc(doc(db, `clients/${id}`));
+						await deleteDoc(doc(db, `clients/${data.id}`));
 						navigation.navigate('Clients');
 					}
 				}

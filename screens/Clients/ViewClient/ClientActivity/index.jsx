@@ -6,7 +6,8 @@ const ClientActivity = ({ invoices }) => {
 	return (
 		<ScrollView>
 			<View style={styles.invoices}>
-				{invoices.length > 0 &&
+				{invoices &&
+					invoices.length > 0 &&
 					invoices.map((item, idx) => (
 						<TouchableOpacity
 							key={idx}
