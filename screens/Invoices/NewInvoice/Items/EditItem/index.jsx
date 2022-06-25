@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../../../firebase';
@@ -6,9 +6,14 @@ import { styles } from './styles';
 import Button from '../../../../../components/Button';
 import ScreenHeader from '../../../../../components/ScreenHeader';
 import InputText from '../../../../../components/InputText';
+import { useGlobalContext } from '../../../../../context';
 
-const EditItem = ({ navigation, route }) => {
-	const { name, description, rate, quantity } = route.params;
+const EditItem = ({ navigation }) => {
+	const { state } = useGlobalContext();
+	const {
+		editItem: [index, originalItem],
+		items
+	} = state;
 
 	const [validation, setValidation] = useState({
 		isValidName: true,
@@ -17,10 +22,10 @@ const EditItem = ({ navigation, route }) => {
 	});
 
 	const [item, setItem] = useState({
-		name,
-		description,
-		rate,
-		quantity
+		name: originalItem.name,
+		description: originalItem.description,
+		rate: originalItem.rate,
+		quantity: originalItem.quantity
 	});
 
 	const onChangeText = (val, id) => {
@@ -31,15 +36,20 @@ const EditItem = ({ navigation, route }) => {
 	};
 
 	const handleSave = async () => {
-		const { name, description, rate, quantity } = item;
+		const { name, rate, quantity, description } = item;
 		if (name && rate && quantity) {
-			const clientRef = doc(db, `items/${id}`);
-			await updateDoc(clientRef, {
-				name,
-				description,
-				rate,
-				quantity
-			});
+			if (
+				originalItem.name === name &&
+				originalItem.rate === rate &&
+				originalItem.description === description
+			) {
+				if (originalItem.id) item.id = originalItem.id;
+				items[index] = item;
+			} else {
+				delete item.id;
+				items[index] = item;
+			}
+			navigation.goBack();
 		} else {
 			setValidation({
 				...validation,
@@ -69,7 +79,10 @@ const EditItem = ({ navigation, route }) => {
 				},
 				{
 					text: 'OK',
-					onPress: () => {}
+					onPress: () => {
+						items.splice(index, 1);
+						navigation.goBack();
+					}
 				}
 			]
 		);

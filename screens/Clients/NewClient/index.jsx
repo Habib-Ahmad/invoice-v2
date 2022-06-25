@@ -42,19 +42,7 @@ const NewClient = ({ navigation }) => {
 
 			try {
 				await addDoc(collection(db, 'clients'), data);
-				// const client = await addDoc(collection(db, 'clients'), data).then(
-				// 	async (docRef) => {
-				// 		const id = docRef.id;
-				// 		const document = await getDoc(doc(db, `clients/${id}`));
-				// 		return document;
-				// 	}
-				// );
-				// clientData = client.data();
-				// clientData.invoices = await addDoc(
-				// 	collection(db, `clients/${client.id}/invoices`),
-				// 	{}
-				// );
-				navigation.navigate('Clients');
+				navigation.goBack();
 			} catch (e) {
 				console.error('Error adding document: ', e);
 			}

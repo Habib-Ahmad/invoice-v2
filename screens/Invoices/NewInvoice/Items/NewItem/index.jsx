@@ -42,10 +42,9 @@ const NewItem = ({ navigation }) => {
 		if (name && rate && quantity) {
 			dispatch({
 				type: 'ADD_ITEM',
-				payload: { ...item }
+				payload: item
 			});
 			navigation.goBack();
-			console.log(item);
 		} else {
 			setValidation({
 				...validation,
