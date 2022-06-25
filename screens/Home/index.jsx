@@ -66,7 +66,7 @@ const Home = ({ navigation }) => {
 
 					<TouchableOpacity
 						activeOpacity={0.7}
-						onPress={() => navigation.navigate('Invoice')}
+						onPress={() => navigation.navigate('NewInvoice')}
 						style={styles.buttonWrapper}
 					>
 						<LinearGradient

@@ -1,4 +1,11 @@
-import { writeBatch, doc, collection } from 'firebase/firestore';
+import {
+	writeBatch,
+	doc,
+	collection,
+	addDoc,
+	getDoc,
+	updateDoc
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
 	Text,
@@ -9,16 +16,17 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Print from 'expo-print';
-import { shareAsync } from 'expo-sharing';
 import Button from '../../../components/Button';
 import ScreenHeader from '../../../components/ScreenHeader';
 import { useGlobalContext } from '../../../context';
 import { db } from '../../../firebase';
+import { html } from '../../../components/pdfTemplate';
 import { styles } from './styles';
 
 const NewInvoice = ({ navigation }) => {
 	const { state, dispatch } = useGlobalContext();
 	const [isValidClient, setIsValidClient] = useState(true);
+	const [selectedPrinter, setSelectedPrinter] = useState();
 	const [data, setData] = useState({
 		id: '',
 		title: 'Invoice heading',
@@ -49,8 +57,12 @@ const NewInvoice = ({ navigation }) => {
 		});
 	};
 
-	const editItem = (item) => {
-		navigation.navigate('EditItem', item);
+	const editItem = (item, idx) => {
+		dispatch({
+			type: 'EDIT_ITEM',
+			payload: [idx, item]
+		});
+		navigation.navigate('EditItem');
 	};
 
 	const removeClient = () => {
@@ -71,36 +83,47 @@ const NewInvoice = ({ navigation }) => {
 		});
 	};
 
-	const printToFile = async () => {
-		// On iOS/android prints the given html. On web prints the HTML from the current page.
-		const { uri } = await Print.printToFileAsync({
-			html
-		});
-		console.log('File has been saved to:', uri);
-		await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
-	};
-
 	const selectPrinter = async () => {
 		const printer = await Print.selectPrinterAsync(); // iOS only
 		setSelectedPrinter(printer);
 	};
 
+	const addItemsToDB = async () => {
+		const batch = writeBatch(db);
+		data.items.forEach((item) => {
+			if (!item.id) {
+				delete item.quantity;
+				const itemRef = doc(collection(db, 'items'));
+				batch.set(itemRef, item);
+			}
+		});
+		await batch.commit();
+	};
+
+	const addInvoiceToDB = async () => {
+		data.client.invoices && delete data.client.invoices;
+		delete data.items.quantity;
+		const clientId = data.client.id;
+		const invoiceId = await addDoc(
+			collection(db, `clients/${clientId}/invoices`),
+			data
+		).then(async (invoiceRef) => invoiceRef.id);
+
+		const invoice = await getDoc(
+			doc(db, `clients/${clientId}/invoices/${invoiceId}`)
+		);
+		const invoiceData = invoice.data();
+		invoiceData.id = invoiceId;
+		console.log(invoiceData);
+		const invoiceRef = doc(db, `clients/${clientId}/invoices/${invoiceId}`);
+		await updateDoc(invoiceRef, { id: invoiceId });
+	};
+
 	const createPDF = async () => {
 		if (Object.keys(data.client).length) {
-			data.client.invoices && delete data.client.invoices;
-
-			// add items to db
-			const batch = writeBatch(db);
-			data.items.forEach((item) => {
-				if (!item.id) {
-					delete item.quantity;
-					const itemRef = doc(collection(db, 'items'));
-					batch.set(itemRef, item);
-				}
-			});
-			await batch.commit();
-
-			// clear context
+			print();
+			addInvoiceToDB();
+			addItemsToDB();
 			dispatch({
 				type: 'CLEAR_STATE'
 			});
@@ -177,13 +200,13 @@ const NewInvoice = ({ navigation }) => {
 							activeOpacity={0.5}
 							style={styles.listItem}
 							key={idx}
-							onPress={() => editItem(item)}
+							onPress={() => editItem(item, idx)}
 						>
 							<Text style={styles.listItemName}>{item.name}</Text>
 							<Text
 								style={[
 									styles.listItemDesc,
-									{ marginTop: item.description && 5 }
+									{ marginTop: item.description ? 5 : 0 }
 								]}
 							>
 								{item.description}
@@ -212,9 +235,7 @@ const NewInvoice = ({ navigation }) => {
 					<Text style={styles.actionText}>Add Item</Text>
 				</TouchableOpacity>
 
-				<View
-					style={[styles.subTotalWrapper, { marginTop: 0, marginBottom: 100 }]}
-				>
+				<View style={styles.subTotalWrapper}>
 					<Text style={styles.subTotalText1}>Total</Text>
 					<Text style={styles.subTotal}>
 						₦{String(total).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}

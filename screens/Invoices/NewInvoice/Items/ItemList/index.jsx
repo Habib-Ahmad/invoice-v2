@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {
-	collection,
-	getDocs,
-	doc,
-	deleteDoc,
-	onSnapshot
-} from 'firebase/firestore';
+import { collection, doc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../../../firebase';
 import { styles } from './styles';
 import ScreenHeader from '../../../../../components/ScreenHeader';
