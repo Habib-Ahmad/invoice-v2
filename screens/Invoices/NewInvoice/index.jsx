@@ -20,8 +20,11 @@ import Button from '../../../components/Button';
 import ScreenHeader from '../../../components/ScreenHeader';
 import { useGlobalContext } from '../../../context';
 import { db } from '../../../firebase';
-import { html } from '../../../components/pdfTemplate';
 import { styles } from './styles';
+import {
+	singlePageInvoice,
+	multiplePageInvoice
+} from '../../../components/pdfTemplate';
 
 const NewInvoice = ({ navigation }) => {
 	const { state, dispatch } = useGlobalContext();
@@ -76,7 +79,10 @@ const NewInvoice = ({ navigation }) => {
 	};
 
 	const print = async () => {
-		// On iOS/android prints the given html. On web prints the HTML from the current page.
+		const html =
+			data.items < 21
+				? singlePageInvoice(data, total)
+				: multiplePageInvoice(data, total);
 		await Print.printAsync({
 			html,
 			printerUrl: selectedPrinter?.url // iOS only
@@ -114,7 +120,6 @@ const NewInvoice = ({ navigation }) => {
 		);
 		const invoiceData = invoice.data();
 		invoiceData.id = invoiceId;
-		console.log(invoiceData);
 		const invoiceRef = doc(db, `clients/${clientId}/invoices/${invoiceId}`);
 		await updateDoc(invoiceRef, { id: invoiceId });
 	};
