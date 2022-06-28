@@ -71,7 +71,6 @@ const SignUpScreen = ({ navigation }) => {
 			data.password.length === 0 ||
 			data.confirmPassword.length === 0
 		) {
-			console.log(data);
 			Alert.alert('Wrong Input!', 'The username or password cannot be empty', [
 				{ text: 'Okay' }
 			]);
