@@ -12,6 +12,7 @@ import { useAuthContext } from '../../context/authContext';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { styles } from './styles';
 import { LinearGradient } from 'expo-linear-gradient';
+import { helloWorld } from '../../functions';
 
 const Home = ({ navigation }) => {
 	const { logOut } = useAuthContext();
@@ -66,7 +67,8 @@ const Home = ({ navigation }) => {
 
 					<TouchableOpacity
 						activeOpacity={0.7}
-						onPress={() => navigation.navigate('NewInvoice')}
+						onPress={() => helloWorld()}
+						// onPress={() => navigation.navigate('NewInvoice')}
 						style={styles.buttonWrapper}
 					>
 						<LinearGradient
