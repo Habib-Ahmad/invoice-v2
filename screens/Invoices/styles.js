@@ -21,6 +21,10 @@ export const styles = StyleSheet.create({
 		fontSize: 22,
 		color: Colors.text
 	},
+	noInvoice: {
+		marginTop: 300,
+		textAlign: 'center'
+	},
 	invoices: {
 		paddingTop: 40
 	},

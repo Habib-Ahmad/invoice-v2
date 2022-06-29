@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
 	SafeAreaView,
@@ -10,9 +10,8 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useAuthContext } from '../../context/authContext';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { styles } from './styles';
 import { LinearGradient } from 'expo-linear-gradient';
-import { helloWorld } from '../../functions';
+import { styles } from './styles';
 
 const Home = ({ navigation }) => {
 	const { logOut } = useAuthContext();
@@ -67,8 +66,7 @@ const Home = ({ navigation }) => {
 
 					<TouchableOpacity
 						activeOpacity={0.7}
-						onPress={() => helloWorld()}
-						// onPress={() => navigation.navigate('NewInvoice')}
+						onPress={() => navigation.navigate('NewInvoice')}
 						style={styles.buttonWrapper}
 					>
 						<LinearGradient
