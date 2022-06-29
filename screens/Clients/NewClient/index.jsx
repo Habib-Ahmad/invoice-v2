@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { collection, addDoc, getDoc, doc } from 'firebase/firestore';
-import { styles } from './styles';
+import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import ScreenHeader from '../../../components/ScreenHeader';
 import Button from '../../../components/Button';
 import InputText from '../../../components/InputText';
+import { styles } from './styles';
 
 const NewClient = ({ navigation }) => {
 	const [validation, setValidation] = useState({

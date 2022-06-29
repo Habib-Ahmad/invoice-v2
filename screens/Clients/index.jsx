@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { styles } from './styles';
@@ -8,7 +8,7 @@ import { collection, onSnapshot } from 'firebase/firestore';
 const Clients = ({ navigation }) => {
 	const [clients, setClients] = useState([]);
 
-	const GetClientList = async () => {
+	const GetClientList = () => {
 		const ref = collection(db, 'clients');
 		onSnapshot(ref, (snap) => {
 			const data = snap.docs.map((snapDoc) => ({

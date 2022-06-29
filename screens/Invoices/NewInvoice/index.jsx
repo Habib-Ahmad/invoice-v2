@@ -1,11 +1,3 @@
-import {
-	writeBatch,
-	doc,
-	collection,
-	addDoc,
-	getDoc,
-	updateDoc
-} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
 	Text,
@@ -15,16 +7,13 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import * as Print from 'expo-print';
 import Button from '../../../components/Button';
 import ScreenHeader from '../../../components/ScreenHeader';
+import Client from '../../../components/Client';
+import Item from '../../../components/Item';
 import { useGlobalContext } from '../../../context';
-import { db } from '../../../firebase';
+import { addInvoiceToDB, addItemsToDB, print } from './functions';
 import { styles } from './styles';
-import {
-	singlePageInvoice,
-	multiplePageInvoice
-} from '../../../components/pdfTemplate';
 
 const NewInvoice = ({ navigation }) => {
 	const { state, dispatch } = useGlobalContext();
@@ -78,57 +67,11 @@ const NewInvoice = ({ navigation }) => {
 		});
 	};
 
-	const print = async () => {
-		const html =
-			data.items < 21
-				? singlePageInvoice(data, total)
-				: multiplePageInvoice(data, total);
-		await Print.printAsync({
-			html,
-			printerUrl: selectedPrinter?.url // iOS only
-		});
-	};
-
-	const selectPrinter = async () => {
-		const printer = await Print.selectPrinterAsync(); // iOS only
-		setSelectedPrinter(printer);
-	};
-
-	const addItemsToDB = async () => {
-		const batch = writeBatch(db);
-		data.items.forEach((item) => {
-			if (!item.id) {
-				delete item.quantity;
-				const itemRef = doc(collection(db, 'items'));
-				batch.set(itemRef, item);
-			}
-		});
-		await batch.commit();
-	};
-
-	const addInvoiceToDB = async () => {
-		data.client.invoices && delete data.client.invoices;
-		delete data.items.quantity;
-		const clientId = data.client.id;
-		const invoiceId = await addDoc(
-			collection(db, `clients/${clientId}/invoices`),
-			data
-		).then(async (invoiceRef) => invoiceRef.id);
-
-		const invoice = await getDoc(
-			doc(db, `clients/${clientId}/invoices/${invoiceId}`)
-		);
-		const invoiceData = invoice.data();
-		invoiceData.id = invoiceId;
-		const invoiceRef = doc(db, `clients/${clientId}/invoices/${invoiceId}`);
-		await updateDoc(invoiceRef, { id: invoiceId });
-	};
-
 	const createPDF = async () => {
 		if (Object.keys(data.client).length) {
-			print();
-			addInvoiceToDB();
-			addItemsToDB();
+			print({ ...data }, total, selectedPrinter);
+			addInvoiceToDB({ ...data });
+			addItemsToDB({ ...data });
 			dispatch({
 				type: 'CLEAR_STATE'
 			});
@@ -167,20 +110,7 @@ const NewInvoice = ({ navigation }) => {
 
 				<Text style={[styles.actionHeader, { marginTop: 30 }]}>Bill to</Text>
 				{Object.keys(data.client).length > 0 ? (
-					<View style={styles.clientWrapper}>
-						<View style={styles.client}>
-							<View style={styles.logoWrapper}>
-								<Text style={styles.logo}>{data.client.name.charAt(0)}</Text>
-							</View>
-							<View style={styles.detailsWrapper}>
-								<Text style={styles.name}>{data.client.name}</Text>
-								<Text style={styles.email}>{data.client.email}</Text>
-							</View>
-						</View>
-						<TouchableOpacity activeOpacity={0.8} onPress={removeClient}>
-							<Icon name="close-outline" size={20} />
-						</TouchableOpacity>
-					</View>
+					<Client data={data} removeClient={removeClient} />
 				) : (
 					<TouchableOpacity
 						style={[styles.action, { marginBottom: 30 }]}
@@ -201,35 +131,7 @@ const NewInvoice = ({ navigation }) => {
 				<Text style={styles.actionHeader}>Items</Text>
 				{data.items.length > 0 &&
 					data.items.map((item, idx) => (
-						<TouchableOpacity
-							activeOpacity={0.5}
-							style={styles.listItem}
-							key={idx}
-							onPress={() => editItem(item, idx)}
-						>
-							<Text style={styles.listItemName}>{item.name}</Text>
-							<Text
-								style={[
-									styles.listItemDesc,
-									{ marginTop: item.description ? 5 : 0 }
-								]}
-							>
-								{item.description}
-							</Text>
-							<View style={styles.listItemNumbersWrapper}>
-								<Text style={styles.listItemNumbers}>
-									₦{item.rate.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} x{' '}
-									{item.quantity.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}{' '}
-								</Text>
-								<Text style={styles.listItemNumbers}>
-									₦
-									{String(item.rate * item.quantity).replace(
-										/\B(?=(\d{3})+(?!\d))/g,
-										','
-									)}
-								</Text>
-							</View>
-						</TouchableOpacity>
+						<Item key={idx} item={item} idx={idx} editItem={editItem} />
 					))}
 
 				<TouchableOpacity

@@ -27,16 +27,16 @@ const ClientTabs = (props) => {
 };
 
 const ViewClient = ({ navigation, route }) => {
+	const id = route.params;
 	const [data, setData] = useState({
 		id: '',
 		name: '',
 		email: '',
-		mobile: '',
-		invoices: []
+		mobile: ''
 	});
 
 	const getClient = async () => {
-		const clientRef = doc(db, `clients/${route.params}`);
+		const clientRef = doc(db, `clients/${id}`);
 		const clientSnap = await getDoc(clientRef);
 
 		if (clientSnap.exists()) {
