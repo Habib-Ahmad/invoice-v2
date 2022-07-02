@@ -34,8 +34,8 @@ const NewInvoice = ({ navigation }) => {
 		const unsubscribe = navigation.addListener('focus', () => {
 			setData({
 				...data,
-				title: state.title && state.title,
-				title2: state.title2 && state.title2,
+				title: state.title ? state.title : data.title,
+				title2: state.title2 ? state.title2 : data.title2,
 				client: state.newInvoiceClient,
 				items: state.items
 			});

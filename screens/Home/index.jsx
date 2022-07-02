@@ -12,20 +12,34 @@ import { useAuthContext } from '../../context/authContext';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import { styles } from './styles';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 const Home = ({ navigation }) => {
 	const { logOut } = useAuthContext();
 
-	const [invoice, setInvoice] = useState([
+	const [invoiceList, setInvoiceList] = useState([
 		{
 			id: '',
 			title: '',
 			path: '',
 			client: {},
 			items: [],
-			date: ''
+			date: '',
+			createdAt: ''
 		}
 	]);
+
+	const getInvoices = () => {
+		const ref = collection(db, 'invoices');
+		onSnapshot(ref, (snap) => {
+			const data = snap.docs.map((snapDoc) => ({
+				...snapDoc.data(),
+				id: snapDoc.id
+			}));
+			setInvoiceList(data);
+		});
+	};
 
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', () => {
@@ -34,12 +48,14 @@ const Home = ({ navigation }) => {
 		return unsubscribe;
 	}, [navigation]);
 
-	const getInvoices = async () => {};
-
 	const ViewInvoice = async (id) => {
 		await AsyncStorage.setItem('viewInvoiceId', id);
 		navigation.navigate('ViewInvoice');
 	};
+
+	const sortedInvoices = invoiceList.sort((a, b) =>
+		a.createdAt < b.createdAt ? 1 : -1
+	);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -52,7 +68,7 @@ const Home = ({ navigation }) => {
 				</View>
 			</View>
 
-			{invoice[0].id === '' ? (
+			{!invoiceList || !invoiceList.length || !invoiceList[0].id ? (
 				<View style={styles.wrapper}>
 					<Text style={styles.text}>
 						You don&apos;t have any invoices, lets create your first invoice!
@@ -76,26 +92,24 @@ const Home = ({ navigation }) => {
 			) : (
 				<ScrollView style={styles.scrollView}>
 					<View style={styles.invoices}>
-						{invoice[0].id
-							? invoice.reverse().map((item, idx) => (
-									<TouchableOpacity
-										activeOpacity={0.8}
-										key={idx}
-										style={styles.invoice}
-										onPress={() => {
-											ViewInvoice(item.id);
-										}}
-									>
-										<View>
-											<FontAwesome name="file-pdf-o" size={25} color="red" />
-										</View>
-										<View>
-											<Text style={styles.invoiceTitle}>{item.title}</Text>
-											<Text style={styles.invoiceDate}>{item.date}</Text>
-										</View>
-									</TouchableOpacity>
-							  ))
-							: null}
+						{sortedInvoices.map((item, idx) => (
+							<TouchableOpacity
+								activeOpacity={0.8}
+								key={idx}
+								style={styles.invoice}
+								onPress={() => {
+									ViewInvoice(item.id);
+								}}
+							>
+								<View>
+									<FontAwesome name="file-pdf-o" size={25} color="red" />
+								</View>
+								<View>
+									<Text style={styles.invoiceTitle}>{item.title}</Text>
+									<Text style={styles.invoiceDate}>{item.date}</Text>
+								</View>
+							</TouchableOpacity>
+						))}
 					</View>
 				</ScrollView>
 			)}
