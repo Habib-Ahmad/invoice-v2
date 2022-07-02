@@ -29,18 +29,12 @@ const Home = ({ navigation }) => {
 
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', () => {
-			GetInvoices();
+			getInvoices();
 		});
 		return unsubscribe;
 	}, [navigation]);
 
-	const GetInvoices = async () => {
-		const invoiceListObject = await AsyncStorage.getItem('invoices');
-		const invoiceList = JSON.parse(invoiceListObject);
-		invoiceList && invoiceList.length > 0
-			? setInvoice(invoiceList)
-			: setInvoice(invoice);
-	};
+	const getInvoices = async () => {};
 
 	const ViewInvoice = async (id) => {
 		await AsyncStorage.setItem('viewInvoiceId', id);

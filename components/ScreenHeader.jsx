@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useGlobalContext } from '../context';
 import * as RootNavigation from '../RootNavigation';
 import Colors from './Colors';
 
 const ScreenHeader = ({ heading, to, props, confirmClose, navigation }) => {
+	const { dispatch } = useGlobalContext();
 	const close = () => {
 		if (navigation) {
 			navigation.goBack();
@@ -14,7 +16,10 @@ const ScreenHeader = ({ heading, to, props, confirmClose, navigation }) => {
 				},
 				{
 					text: 'Discard Changes',
-					onPress: () => RootNavigation.navigate(to, props && props)
+					onPress: () => {
+						dispatch({ type: 'CLEAR_STATE' });
+						RootNavigation.navigate(to, props && props);
+					}
 				}
 			]);
 		} else {
