@@ -1,4 +1,6 @@
 export const initailState = {
+	title: '',
+	title2: '',
 	newInvoiceClient: {},
 	items: [],
 	currentItem: {},
@@ -36,6 +38,15 @@ export const defaultReducer = (state, action) => {
 			return {
 				...state,
 				editItem: [index, item]
+			};
+		}
+		case 'EDIT_INVOICE': {
+			const { title, title2, items } = action.payload;
+			return {
+				...state,
+				title,
+				title2,
+				items
 			};
 		}
 		case 'CLEAR_STATE': {

@@ -12,6 +12,7 @@ import EditClient from '../Clients/EditClient';
 
 import Invoices from '../Invoices';
 import NewInvoice from '../Invoices/NewInvoice';
+import ViewInvoice from '../Invoices/ViewInvoice';
 import ClientList from '../Invoices/NewInvoice/ClientList';
 import NewItem from '../Invoices/NewInvoice/Items/NewItem';
 import EditItem from '../Invoices/NewInvoice/Items/EditItem';
@@ -73,6 +74,7 @@ const MainStackScreen = () => {
 			<Stack.Screen name="ViewClient" component={ViewClient} />
 			<Stack.Screen name="EditClient" component={EditClient} />
 			<Stack.Screen name="NewInvoice" component={NewInvoice} />
+			<Stack.Screen name="ViewInvoice" component={ViewInvoice} />
 			<Stack.Screen name="ClientList" component={ClientList} />
 			<Stack.Screen name="NewItem" component={NewItem} />
 			<Stack.Screen name="EditItem" component={EditItem} />

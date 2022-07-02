@@ -37,7 +37,7 @@ const Invoices = ({ navigation }) => {
 	}, [navigation]);
 
 	const ViewInvoice = async (id) => {
-		// navigation.navigate('ViewInvoice');
+		navigation.navigate('ViewInvoice', id);
 	};
 
 	if (!invoiceList || !invoiceList.length || !invoiceList[0].id) {
@@ -48,6 +48,13 @@ const Invoices = ({ navigation }) => {
 				</View>
 
 				<Text style={styles.noInvoice}>No invoices created yet</Text>
+
+				<TouchableOpacity
+					onPress={() => navigation.navigate('NewInvoice')}
+					style={styles.newInvoiceBtn}
+				>
+					<AntDesign style={styles.newInvoiceBtnIcon} name="plus" size={40} />
+				</TouchableOpacity>
 			</View>
 		);
 	}
