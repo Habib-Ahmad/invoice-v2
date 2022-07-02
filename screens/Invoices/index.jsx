@@ -14,7 +14,8 @@ const Invoices = ({ navigation }) => {
 			path: '',
 			client: {},
 			items: [],
-			date: ''
+			date: '',
+			createdAt: ''
 		}
 	]);
 
@@ -40,6 +41,10 @@ const Invoices = ({ navigation }) => {
 		navigation.navigate('ViewInvoice', id);
 	};
 
+	const sortedInvoices = invoiceList.sort((a, b) =>
+		a.createdAt < b.createdAt ? 1 : -1
+	);
+
 	if (!invoiceList || !invoiceList.length || !invoiceList[0].id) {
 		return (
 			<View style={styles.container}>
@@ -49,12 +54,7 @@ const Invoices = ({ navigation }) => {
 
 				<Text style={styles.noInvoice}>No invoices created yet</Text>
 
-				<TouchableOpacity
-					onPress={() => navigation.navigate('NewInvoice')}
-					style={styles.newInvoiceBtn}
-				>
-					<AntDesign style={styles.newInvoiceBtnIcon} name="plus" size={40} />
-				</TouchableOpacity>
+				<NewInvoiceButton navigation={navigation} />
 			</View>
 		);
 	}
@@ -66,7 +66,7 @@ const Invoices = ({ navigation }) => {
 			</View>
 			<ScrollView style={styles.scrollView}>
 				<View style={styles.invoices}>
-					{invoiceList.reverse().map((item, idx) => (
+					{sortedInvoices.map((item, idx) => (
 						<TouchableOpacity
 							activeOpacity={0.8}
 							key={idx}
@@ -86,14 +86,20 @@ const Invoices = ({ navigation }) => {
 					))}
 				</View>
 			</ScrollView>
-			<TouchableOpacity
-				onPress={() => navigation.navigate('NewInvoice')}
-				style={styles.newInvoiceBtn}
-			>
-				<AntDesign style={styles.newInvoiceBtnIcon} name="plus" size={40} />
-			</TouchableOpacity>
+			<NewInvoiceButton navigation={navigation} />
 		</View>
 	);
 };
 
 export default Invoices;
+
+const NewInvoiceButton = ({ navigation }) => {
+	return (
+		<TouchableOpacity
+			onPress={() => navigation.navigate('NewInvoice')}
+			style={styles.newInvoiceBtn}
+		>
+			<AntDesign style={styles.newInvoiceBtnIcon} name="plus" size={40} />
+		</TouchableOpacity>
+	);
+};

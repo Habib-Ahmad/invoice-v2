@@ -80,6 +80,7 @@ const ViewInvoice = ({ navigation, route }) => {
 							doc(db, `clients/${data.client.id}/invoices/${id}`)
 						);
 						await deleteDoc(doc(db, `invoices/${id}`));
+						navigation.goBack();
 					}
 				}
 			]

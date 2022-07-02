@@ -50,6 +50,7 @@ const processData = (data) => {
 		date.getFullYear()
 	];
 	data.date = `${year}-${month}-${day}`;
+	data.createdAt = date;
 	data.client.invoices && delete data.client.invoices;
 	delete data.items.quantity;
 
