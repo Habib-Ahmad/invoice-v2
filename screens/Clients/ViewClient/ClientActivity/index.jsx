@@ -14,7 +14,7 @@ const ClientActivity = ({ navigation, id }) => {
 			onSnapshot(ref, (snap) => {
 				const data = snap.docs.map((snapDoc) => ({
 					...snapDoc.data(),
-					id: snapDoc.id
+					id: snapDoc.id,
 				}));
 				setInvoices(data);
 			});
@@ -32,7 +32,7 @@ const ClientActivity = ({ navigation, id }) => {
 						<TouchableOpacity
 							key={idx}
 							style={styles.invoice}
-							onPress={() => console.log('ViewInvoice', item.id)}
+							onPress={() => navigation.navigate('ViewInvoice', item.id)}
 						>
 							<View>
 								<FontAwesome name="file-pdf-o" size={25} color="red" />
